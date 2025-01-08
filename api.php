@@ -1,5 +1,5 @@
 <?php
-require "connect.php";
+require_once "connect.php";
 
 function getTable($table) {
     global $db;
@@ -10,9 +10,33 @@ function getTable($table) {
 }
 
 
+function insertTable($table, $data){
+    global $db;
+    // keys : values
+    // name : termékneve
+    // price : ára
+    // ...
+    $oszlopok = implode( ", ", array_keys($data) );
+    $ertekek = implode( ", ", array_values($data));
+    
+    
+    $s = "INSERT INTO `$table` ($oszlopok) VALUES ($ertekek)";
+    $sql = $db->prepare($s);
+
+    $siker = $sql->execute();
+    if( !$siker  ){
+        echo "HIBA";
+        echo $s;
+    } else {
+        echo "ok";
+    }
+}
+
+
 
 function showTable($table){
-    
+
+    // lekéri az adatokat
     $users = getTable($table);
 
     // cím
@@ -48,12 +72,20 @@ function showTable($table){
 
 
 // API végpontok, amiket le lehet kérni
-//    index.php?tabla=products
-//    index.php?tabla=purchase
-//    index.php?tabla=categories
+//                         URL paraméterek
+//  www.oldalneve.com/FÁJL?BEÁLLÍTÁS=ERTEK
+//    api.php?tabla=products
+//    api.php?tabla=purchase
+//    api.php?tabla=categories
+// Beállítás lekérése:
+//  kül9nleges tömb
+//  változó:   $_GET['beállítás']
 
-if(isset($_GET["tabla"]) && $_GET["tabla"] == "products" ){
-  echo json_encode( getTable("products") );
+// 1: ellenőrizzük, hogy létezik-e beállítás (isset)
+// 2: melyik táblát írták be a webcímbe
+if( isset($_GET["tabla"]) && $_GET["tabla"] == "products" ){
+    $adat = getTable("products");
+    echo json_encode( $adat  );
 }
 else if(isset($_GET["tabla"]) && $_GET["tabla"] == "purchase" ){
   echo json_encode( getTable("purchase") );

@@ -1,35 +1,41 @@
-<!DOCTYPE html>
-<html lang="hu">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Bejelentkezés</title>
-    <link rel="stylesheet" href="loginlogout.css">
-</head>
+<html>
 <body>
-    <header class="header">
-        <div class="logo">
-            <img src="logo.png" alt="In Medias Res">
-            <span>In Medias Res</span>
-        </div>
-        <nav>
-            <a href="#">Főoldal</a>
-            <a href="#">Kategóriák</a>
-        </nav>
-        <div class="search">
-            <input type="text" placeholder="Keresés">
-        </div>
-    </header>
-    <main class="login-container">
-        <form class="login-form" action="login.php" method="POST">
-            <label for="email">Email:</label>
-            <input type="text" id="email" name="email" required>
-            
-            <label for="jelszo">Jelszó:</label>
-            <input type="password" id="jelszo" name="jelszo" required>
-            
-            <button type="submit">Bejelentkezés</button>
-        </form>
-    </main>
+
+    <div id="termekek">
+        
+    </div>
+    
+  <script>
+
+      // függgvény ami letölti az API-ból a megjelölt táblát
+    function letoltes( tabla, megjelenitoFV )
+    {
+      fetch(`/api.php?tabla=${tabla}`)    // adat letöltés
+      .then(response => response.json())    // JSON-ként értelmezés
+      .then(data => megjelenitoFV(data))       // konzolra kiírju az adatok
+      .catch(error => console.error('Error:', error));    // ha hiba van, azt is
+    }
+
+      // függvény ami az oldalra írja az adatokat
+    function megjelenit(adatok){
+      hova = document.getElementById("termekek");
+        
+      for(let termek of adatok){
+          szoveg = `
+            <h1>${termek.name}</h1>
+            <p>${termek.price} Ft</p>
+          `;
+          hova.innerHTML += szoveg;
+      }
+    }    
+      
+
+    // teszt függvény:
+      letoltes("products", megjelenit);
+    
+
+  </script>
+
+  
 </body>
 </html>
